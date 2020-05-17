@@ -49,13 +49,15 @@
                                     <h3>{{ productDetail.name }}</h3>
                                 </div>
                                 <div class="pd-desc">
-                                    <p>
-                                        {{ productDetail.description }}
-                                    </p>
+                                    <div v-html="productDetail.description">
+                                        
+                                    </div>
                                     <h4>${{ productDetail.price }}</h4>
                                 </div>
                                 <div class="quantity">
-                                    <router-link to="/cart" class="primary-btn pd-cart">Add To Cart</router-link>
+                                    <router-link to="/cart">
+                                        <a href="#" @click="saveKeranjang(productDetail.id, productDetail.name,productDetail.gallery[0].photo,productDetail.price)" class="primary-btn pd-cart"> Add To Cart </a>
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +93,8 @@ export default {
     data(){
         return {
             gambar_default:"",
-            productDetail: []
+            productDetail: [],
+            keranjang: []
         }
     },
     methods:{
@@ -101,9 +104,30 @@ export default {
         setDataPhoto(data){
             this.productDetail = data;
             this.gambar_default = data.gallery[0].photo;
+        },
+        saveKeranjang(idProduct,name,photo,price){
+            
+            let productStored = {
+                "id": idProduct,
+                "name": name,
+                "photo": photo,
+                "price": price,
+            }
+
+            this.keranjang.push(productStored);
+            const parsed = JSON.stringify(this.keranjang);
+            localStorage.setItem('keranjang', parsed);
         }
     },
-     mounted(){
+    mounted(){
+        if (localStorage.getItem('keranjang')) {
+            try {
+                this.keranjang = JSON.parse(localStorage.getItem('keranjang'));
+            } catch(e) {
+                localStorage.removeItem('keranjang');
+            }
+        }
+
         axios.get("http://localhost/shayna_backend/public/api/products",{
             params: {
                 id: this.$route.params.id

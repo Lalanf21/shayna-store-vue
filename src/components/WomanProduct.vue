@@ -9,8 +9,10 @@
                             <div class="pi-pic">
                                 <img :src="itemProduct.gallery[0].photo" alt="" />
                                 <ul>
-                                    <li class="w-icon active">
-                                        <a href="#"><i class="icon_bag_alt"></i></a>
+                                    <li class="w-icon active" @click="saveKeranjang(itemProduct.id, itemProduct.name,itemProduct.gallery[0].photo,itemProduct.price)">
+                                        <a href="#">
+                                            <i class="icon_bag_alt"></i>
+                                        </a>
                                     </li>
                                     <li class="quick-view">
                                         <router-link :to="'/product/'+itemProduct.id"> + Quick View </router-link>
@@ -52,10 +54,38 @@ export default {
     },
     data(){
         return{
-            products: []
+            products: [],
+            keranjang: [],
+        }
+    },
+    methods: {
+        removeCart(index){
+            this.keranjang.splice(index,1);
+            const parsed = JSON.stringify(this.keranjang);
+            localStorage.setItem('keranjang', parsed);
+        },
+        saveKeranjang(idProduct,name,photo,price){
+            
+            let productStored = {
+                "id": idProduct,
+                "name": name,
+                "photo": photo,
+                "price": price,
+            }
+
+            this.keranjang.push(productStored);
+            const parsed = JSON.stringify(this.keranjang);
+            localStorage.setItem('keranjang', parsed);
         }
     },
     mounted(){
+        if (localStorage.getItem('keranjang')) {
+            try {
+                this.keranjang = JSON.parse(localStorage.getItem('keranjang'));
+            } catch(e) {
+                localStorage.removeItem('keranjang');
+            }
+        }
         axios.get("http://localhost/shayna_backend/public/api/products")
             .then( res => (this.products = res.data.data.data))
             .catch( err => console.log(err) );
