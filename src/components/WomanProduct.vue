@@ -65,7 +65,6 @@ export default {
             localStorage.setItem('keranjang', parsed);
         },
         saveKeranjang(idProduct,name,photo,price){
-            
             let productStored = {
                 "id": idProduct,
                 "name": name,
@@ -76,6 +75,7 @@ export default {
             this.keranjang.push(productStored);
             const parsed = JSON.stringify(this.keranjang);
             localStorage.setItem('keranjang', parsed);
+            window.location.reload();
         }
     },
     mounted(){

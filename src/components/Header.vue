@@ -46,7 +46,7 @@
                                                             <h6>{{ cart.name }}</h6>
                                                         </div>
                                                     </td>
-                                                    <td class="si-close" @click="removeCart(keranjang.index)">
+                                                    <td class="si-close" @click="removeCart(cart.id)">
                                                         <i class="ti-close"></i>
                                                     </td>
                                                 </tr>
@@ -83,10 +83,18 @@
 export default {
     name: 'Header',
     methods: {
-        removeCart(index){
+        removeCart(idx){
+            // this.keranjang.splice(index,1);
+            // const parsed = JSON.stringify(this.keranjang);
+            // localStorage.setItem('keranjang', parsed);
+            let keranjangStorage = JSON.parse(localStorage.getItem('keranjang'));
+            let itemKeranjangStorage = keranjangStorage.map(itemKeranjangStorage => itemKeranjangStorage.id);
+            let index = itemKeranjangStorage.findIndex(id=>id == idx);
             this.keranjang.splice(index,1);
+
             const parsed = JSON.stringify(this.keranjang);
-            localStorage.setItem('keranjang', parsed);
+            localStorage.setItem('keranjang',parsed);
+            window.location.reload();
         }
     },
     data(){
